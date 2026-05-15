@@ -1,0 +1,38 @@
+# Maven
+target/
+*.class
+*.jar
+*.war
+*.ear
+*.nar
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+# IDE
+.idea/
+*.iml
+*.iws
+*.ipr
+.vscode/
+.settings/
+.classpath
+.project
+.factorypath
+
+# Spring Boot
+*.log
+logs/
+spring-shell.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Docker
+docker-compose.override.yml
+
+# Secrets / local config
+*.env
+application-local.yml
+application-local.properties
+config-repo/
