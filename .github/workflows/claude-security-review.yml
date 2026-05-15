@@ -1,0 +1,51 @@
+name: Claude Security Review
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+# One review at a time per PR
+concurrency:
+  group: claude-security-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  security-review:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    permissions:
+      contents: read
+      pull-requests: write
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2  # Only need the diff
+
+      - name: Claude Security Scan
+        uses: anthropics/claude-code-action@v1
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          model: claude-sonnet-4-6
+          max_turns: 8
+
+          prompt: |
+            Perform a security-focused review of this PR. Focus on:
+
+            1. **Auth & Access Control**: JWT handling, missing auth checks, role bypass
+            2. **Input Validation**: Unvalidated user input, missing @Valid annotations, SQL injection
+            3. **Kafka Security**: Message tampering, missing idempotency keys, poison messages
+            4. **Secrets & Config**: Hardcoded credentials, secrets in logs, sensitive data in URLs
+            5. **Dependency Issues**: Known vulnerable dependencies in pom.xml
+            6. **Data Exposure**: Sensitive fields in API responses, missing DTO filtering
+
+            For each finding:
+            - State the file and line number
+            - Rate severity: CRITICAL / HIGH / MEDIUM / LOW
+            - Explain the risk in one sentence
+            - Suggest a fix
+
+            If no security issues are found, say so briefly. Don't pad the review.
+
+          allowed_tools: "Read,Bash(git diff:*),Bash(grep:*),Bash(find:*)"

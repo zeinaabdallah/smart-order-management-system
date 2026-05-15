@@ -31,6 +31,10 @@ Thumbs.db
 # Docker
 docker-compose.override.yml
 
+# Personal notes
+ROADMAP.md
+USER_STORIES.md
+
 # Secrets / local config
 *.env
 application-local.yml
