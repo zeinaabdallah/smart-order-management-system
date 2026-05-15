@@ -34,6 +34,7 @@ docker-compose.override.yml
 # Personal notes
 ROADMAP.md
 USER_STORIES.md
+soms-config/
 
 # Secrets / local config
 *.env
